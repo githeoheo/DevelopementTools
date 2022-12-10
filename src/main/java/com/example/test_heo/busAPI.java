@@ -4,6 +4,7 @@ package com.example.test_heo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,36 +17,32 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+//http://moapp-map.com
+//http://localhost:8080/navigation?start=128.6146397,35.8852186&goal=128.629909,35.877577&option=trafast
+//35.8852186, 128.6146397 경대 정문
+//35.877557, 128.629909 동대구역복합 환승센터앞
+//        String start = URLEncoder.encode("128.6146397,35.8852186", "UTF-8"); //경대정문
+//        String goal = URLEncoder.encode("128.629909,35.877557", "UTF-8"); // 동대구역
+//        String option = URLEncoder.encode("trafast", "UTF-8"); // 옵션
 @RestController
 public class busAPI {
-
-    //http://moapp-map.com
-    //http://localhost:8080/navigation
     @GetMapping("navigation")
-    public Integer navigation() throws IOException {
-//        BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+    public Integer navigation(@RequestParam String start, String goal, String option) throws IOException {
         String clientId = "z17ahs6qnw";
         String clientSecret = "9ttttQgaR6XracSDpaKFdRSxweFTue2kb6QIfmAb";
 
-//            System.out.println("주소를 입력해주세요 : ");
-//
-//            String address = io.readLine();
-//            String addr = URLEncoder.encode(address, "UTF-8");
-        //35.8852186, 128.6146397 경대 정문
-        //35.877557, 128.629909 동대구역복합 환승센터앞
-        String start = URLEncoder.encode("128.6146397,35.8852186", "UTF-8"); //경대정문
-        String goal = URLEncoder.encode("128.629909,35.877557", "UTF-8"); // 동대구역
-        String option = URLEncoder.encode("trafast", "UTF-8"); // 옵션
-
-
         // Geocoding 개요에 나와있는 API URL 입력.
-        //String apiURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start={start}&goal={goal}&option={option}";	// JSON
-        String apiURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=128.6146397,35.8852186&goal=128.629909,35.877557&option=trafast";	// JSON
+//        String apiURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=128.6146397,35.8852186&goal=128.629909,35.877557&option=trafast";	// JSON
+        StringBuilder urlBuilder = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"); /*URL*/
+        urlBuilder.append("?" + URLEncoder.encode("start","UTF-8") + "=" + URLEncoder.encode(start, "UTF-8")); /*출발지 좌표*/
+        urlBuilder.append("&" + URLEncoder.encode("goal","UTF-8") + "=" + URLEncoder.encode(goal, "UTF-8")); /*도착지 좌표*/
+        urlBuilder.append("&" + URLEncoder.encode("option","UTF-8") + "=" + URLEncoder.encode(option, "UTF-8")); /*옵션*/
 
-        URL url = new URL(apiURL);
+
+
+        URL url = new URL(urlBuilder.toString());
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
-
         con.setRequestProperty("Content-type", "application/json"); //여기 추가부분임
 
         // Geocoding 개요에 나와있는 요청 헤더 입력.
@@ -54,9 +51,7 @@ public class busAPI {
 
         // 요청 결과 확인. 정상 호출인 경우 200
         int responseCode = con.getResponseCode();
-
         BufferedReader rd;
-
         if (responseCode == 200) {
             rd = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
         } else {
