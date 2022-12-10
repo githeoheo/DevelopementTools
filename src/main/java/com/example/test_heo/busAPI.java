@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-//http://moapp-map.com
+//출발좌표와 도착좌표와 trafast 옵션을 넣으면 시간을 return 해준다.
 //http://localhost:8080/navigation?start=128.6146397,35.8852186&goal=128.629909,35.877577&option=trafast
 //35.8852186, 128.6146397 경대 정문
 //35.877557, 128.629909 동대구역복합 환승센터앞
